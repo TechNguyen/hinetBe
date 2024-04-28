@@ -52,6 +52,32 @@ const getUserInfo = async (req, res) => {
 };
 
 
+
+const getUserInfoParams = async (id) => {
+  let entity =  await models.users.findOne({
+    where: {
+      user_id: id,
+    },
+    include: [
+      {
+        model: models.tutor_profile,
+        as: "tutor_profiles",
+        include: ['tutor_certifications','tutor_educations','tutor_experiences']
+      },
+      {
+        model: models.tutor_available_date,
+        as:'tutor_available_dates',
+      }
+    ],
+  });
+  var response  = {
+     ...entity.dataValues,
+
+  }
+  return response;
+};
+
+
 const updateUserInfo = async (req, res) => {
   let { id } = req.params;
   let entity = await models.users.findOne({
@@ -59,10 +85,8 @@ const updateUserInfo = async (req, res) => {
       user_id: id,
     }
   });
-  console.log(req.body);
   entity.update(req.body)
-
   return succesCode(res, entity, "Success");
 };
 
-module.exports = { getUserInfo , updateUserInfo};
+module.exports = { getUserInfo , updateUserInfo, getUserInfoParams};

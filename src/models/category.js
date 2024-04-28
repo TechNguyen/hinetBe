@@ -22,6 +22,10 @@ class category extends Sequelize.Model {
     description: {
       type: DataTypes.STRING(50),
       allowNull: true
+    },
+    tutor_p_id: {
+      type: DataTypes.STRING(50),
+      allowNull: true
     }
   }, {
     sequelize,

@@ -59,11 +59,11 @@ class users extends Sequelize.Model {
         file_cv: {
           type: DataTypes.STRING(255),
           allowNull: true,
-        }
-        // address: {
-        //   type: DataTypes.TEXT,
-        //   allowNull: true,
-        // },
+        },
+        category_id: {
+          type: DataTypes.STRING(50),
+          allowNull: true,
+        },
       },
       {
         sequelize,

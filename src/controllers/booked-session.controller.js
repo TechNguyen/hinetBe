@@ -20,6 +20,18 @@ const findById = async (req, res) => {
   return succesCode(res, entity);
 };
 
+const findByStudentId  = async (req,res) => {
+  let { id } = req.params;
+  let entity = await models.booked_session.findAll({
+    where: {
+      student_id: id
+    },
+    include: ["tutor", "student", "course"]
+  });
+  return succesCode(res, entity);
+}
+
+
 const create = async (req, res) => {
   let body = req.body;
   let entity = await models.booked_session.create({
@@ -56,4 +68,4 @@ const deleteById = async (req, res) => {
   return result > 0 ? succesCode(res, true) : failCode(res, "Thất bại");
 };
 
-module.exports = { findAll, findById, create, update, deleteById };
+module.exports = { findAll, findById, create, update, deleteById,findByStudentId };

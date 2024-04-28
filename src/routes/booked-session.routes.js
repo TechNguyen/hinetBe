@@ -5,6 +5,7 @@ const {
   create,
   update,
   deleteById,
+  findByStudentId
 } = require("../controllers/booked-session.controller");
 const bookedSessionRoutes = express.Router();
 
@@ -13,6 +14,9 @@ const bookedSessionRoutes = express.Router();
  */
 bookedSessionRoutes.get("/", findAll);
 bookedSessionRoutes.get("/:id", findById);
+
+
+bookedSessionRoutes.get('/findBySTID/:id', findByStudentId)
 bookedSessionRoutes.post("/", create);
 bookedSessionRoutes.put("/:id", update);
 bookedSessionRoutes.delete("/:id", deleteById);

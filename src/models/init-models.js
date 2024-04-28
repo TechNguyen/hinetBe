@@ -19,8 +19,10 @@ const _tutor_profile = require("./tutor_profile");
 const _tutoring_contract = require("./tutoring_contract");
 const _tutoring_feedback = require("./tutoring_feedback");
 const _user_verification_request = require("./user_verification_request");
+const _turtor_category = require('./turtor_category')
 const _users = require("./users");
 const _comment = require("./comment")
+const _rate =  require('./rate')
 function initModels(sequelize) {
   const booked_session = _booked_session(sequelize, DataTypes);
   const category = _category(sequelize, DataTypes);
@@ -42,9 +44,10 @@ function initModels(sequelize) {
   const tutoring_contract = _tutoring_contract(sequelize, DataTypes);
   const tutoring_feedback = _tutoring_feedback(sequelize, DataTypes);
   const user_verification_request = _user_verification_request(sequelize, DataTypes);
+  const turtor_category = _turtor_category(sequelize, DataTypes);
   const users = _users(sequelize, DataTypes);
   const comments = _comment(sequelize, DataTypes);
-
+  const rate  = _rate(sequelize, DataTypes);
   tutoring_contract.belongsTo(booked_session, { as: "booked_session", foreignKey: "booked_session_id"});
   booked_session.hasMany(tutoring_contract, { as: "tutoring_contracts", foreignKey: "booked_session_id"});
   course.belongsTo(category, { as: "category", foreignKey: "category_id"});
@@ -115,6 +118,16 @@ function initModels(sequelize) {
   users.hasMany(comments, { foreignKey: 'author_id' });
   comments.belongsTo(users, { foreignKey: 'user_id' });
 
+
+  category.hasMany(turtor_category, { foreignKey: 'category_id' } )
+  turtor_category.belongsTo(category, { foreignKey: 'category_id' })
+  
+  tutor_profile.hasMany(turtor_category, {foreignKey: 'tutor_profile_id'})
+  turtor_category.belongsTo(tutor_profile, { foreignKey: 'tutor_profile_id' });
+
+
+  users.hasMany(rate, {foreignKey: 'author_id'})
+  users.hasMany(rate, {foreignKey: 'view_id'})
   return {
     booked_session,
     category,
@@ -137,7 +150,9 @@ function initModels(sequelize) {
     tutoring_feedback,
     user_verification_request,
     users,
-    comments
+    comments,
+    turtor_category,
+    rate
   };
 }
 module.exports = initModels;

@@ -1,5 +1,7 @@
+const category = require("../models/category");
 const sequelize = require("../models/index");
 const initModel = require("../models/init-models");
+const tutor_profile = require("../models/tutor_profile");
 const { succesCode, errorCode, failCode } = require("../responses/response");
 const models = initModel(sequelize);
 const { Op } = require("sequelize");
@@ -16,7 +18,20 @@ const findById = async (req, res) => {
   return succesCode(res, entity);
 };
 
+
+
+const findTurtolBySubject = async (req,res) =>  {
+  let entitylist = await models.turtor_category.findAll({
+    where: {
+      category_id: req.params.id
+    },
+    include: [models.tutor_profile, models.category]
+  })
+  return succesCode(res, entitylist, "Lấy danh sách loại khóa học thành công!!!");
+  
+}
 const create = async (req, res) => {
+
   let body = req.body;
   let entity = await models.category.create({
     category_id: uuidv4(),
@@ -48,8 +63,8 @@ const deleteById = async (req, res) => {
       category_id: id,
     },
   });
-
+  
   return result > 0 ? succesCode(res, true) : failCode(res, "Thất bại");
 };
 
-module.exports = { findAll, findById, create, update, deleteById };
+module.exports = { findAll, findById, create, update, deleteById, findTurtolBySubject };

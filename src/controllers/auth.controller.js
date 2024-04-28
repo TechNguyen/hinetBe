@@ -48,7 +48,11 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
+
   try {
+
+
+  
     const {
       email,
       last_name,
@@ -58,12 +62,22 @@ const register = async (req, res) => {
       google_id,
       role_id,
       type,
+      category_id, 
       password,
       tutor_profile: { description, stripe_account_id },
     } = req.body;
 
-    const file_cv = req.file?.path ? req.file.path : "";
-    const avatar_url = "";
+
+
+    var file_cv = null;
+    var avatar_url = null;
+    if(req.files) {
+      file_cv = req.files['file_cv'] != undefined ? req.files['file_cv'][0].path : "";
+      avatar_url = req.files['avatar_url'] != undefined  ? req.files['avatar_url'][0].path : "";
+    }
+
+
+
 
     var check = await models.users.findOne({
       where:{
@@ -86,10 +100,11 @@ const register = async (req, res) => {
       role_id,
       type,
       password,
+      category_id,
       file_cv
     });
 
-    console.log(user);
+    
     // tạo luôn profile
     // tutor
     if (type == "0") {
@@ -128,8 +143,9 @@ const getToken = (user) => {
       email: user.email,
       first_name: user.firstName,
       last_name: user.lastName,
+      role_id: user.role_id
     },
-    "doangiasu",
+    "thang2003",
     {
       expiresIn: "30 days",
     }

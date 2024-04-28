@@ -11,6 +11,7 @@ class tutor_profile extends Sequelize.Model {
           type: DataTypes.STRING(50),
           allowNull: false,
           primaryKey: true,
+          
         },
         user_id: {
           type: DataTypes.STRING(50),
