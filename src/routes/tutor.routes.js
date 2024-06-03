@@ -8,12 +8,14 @@ const {
   updateTutorCertifications,
   updateTutorEducations,
   updateTutorExperience,
-  getTutorByUserId
+  getTutorByUserId,
+  findAllPage
 } = require("../controllers/tutor.controller");
 
 const tutorRoutes = express.Router();
 
 tutorRoutes.get("/", findAll);
+tutorRoutes.get("/getpage", findAllPage);
 tutorRoutes.get("/:id", findById);
 tutorRoutes.post("/", create);
 tutorRoutes.put("/:id", update);

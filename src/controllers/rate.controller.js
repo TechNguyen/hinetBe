@@ -11,7 +11,7 @@ const AddRate = async (req, res) => {
    try {
         let body = req.body;
         let entities = await models.rate.create({
-            ...body,
+            ...body, 
             id: uuidv4(),
         })
         return succesCode(res, entities, "Tạo đánh giá thành công!")
@@ -37,9 +37,7 @@ const getRate = async (req,res) => {
             }
 
         }))
-
         return succesCode(res, entities, "Tạo đánh giá thành công!")
-
     } catch (error) {
         return failCode(res,error.message)
     }

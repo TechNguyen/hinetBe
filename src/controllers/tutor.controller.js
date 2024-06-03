@@ -7,6 +7,8 @@ const { Op, where } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const moment = require("moment");
 
+
+
 const findAll = async (req, res) => {
   let entities = await models.tutor_profile.findAll({
     include: [
@@ -15,10 +17,47 @@ const findAll = async (req, res) => {
       "tutor_experiences",
       "user",
     ],
-  });
+  },);
   return succesCode(
     res,
     entities,
+    "Lấy danh sách profile gia sư thành công!!!"
+  );
+};
+
+
+const findAllPage = async (req, res) => {
+  let {pageIndex,pageSize} =  req.query;
+  pageIndex = parseInt(pageIndex) || 1;
+  pageSize = parseInt(pageSize) || 15;
+
+  let entitiesmodel = await models.tutor_profile.count({
+    include: [
+      "tutor_educations",
+      "tutor_certifications",
+      "tutor_experiences",
+      "user",
+    ],
+  });
+
+  let entities = await models.tutor_profile.findAll({
+    include: [
+      "tutor_educations",
+      "tutor_certifications",
+      "tutor_experiences",
+      "user",
+    ],
+    offset: (pageIndex - 1) * pageSize,
+    limit: pageSize
+  },);
+  return succesCode(
+    res,
+    {
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalPage: entitiesmodel,
+      entities
+    },
     "Lấy danh sách profile gia sư thành công!!!"
   );
 };
@@ -201,6 +240,7 @@ const getTutorByUserId = async (req, res) => {
 
 module.exports = {
   findAll,
+  findAllPage,
   findById,
   create,
   update,
