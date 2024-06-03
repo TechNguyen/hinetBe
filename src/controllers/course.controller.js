@@ -33,11 +33,27 @@ const findAll = async (req, res) => {
   return succesCode(res, entities, "Lấy danh sách khóa học thành công!!!");
 };
 
+
+const countStudent = async (req,res) => {
+  let {course_id,id} = req.query;
+
+
+  let countVL = await models.booked_session.count({
+    where: {
+      [Op.and]: [{ course_id: course_id }, { tutor_id: id }],
+    },
+    distinct: true,
+    col: 'student_id'
+  })
+  console.log(countVL);
+  succesCode(res,countVL)
+}
+
 const findAllbyTutor = async (req, res) => {
   let {id} = req.params;
-  let {pageIndex,pageSize} =  req.query;
+  let {pageIndex,pageSize} = req.query;
   pageIndex = parseInt(pageIndex) || 1;
-  pageSize = parseInt(pageSize) || 8;
+  pageSize = parseInt(pageSize) || 10;
 
 
   let total = await models.course.count(
@@ -47,6 +63,10 @@ const findAllbyTutor = async (req, res) => {
     }
    }
   )
+
+
+
+ 
 
   let entities = await models.course.findAll({
     where :{
@@ -189,4 +209,5 @@ module.exports = {
   deleteById,
   getListCourseHome,
   findAllbyTutor,
+  countStudent
 };

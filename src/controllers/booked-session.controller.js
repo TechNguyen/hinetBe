@@ -12,6 +12,10 @@ const findAll = async (req, res) => {
   return succesCode(res, entities, "Lấy danh sách thành công!!!");
 };
 
+
+
+
+
 const findById = async (req, res) => {
   let { id } = req.params;
   let entity = await models.booked_session.findByPk(id, {
@@ -32,8 +36,118 @@ const findByStudentId  = async (req,res) => {
 }
 
 
+const findByTurtorId = async (req,res) => {
+  let { id } = req.params;
+  console.log(req);
+  let {pageIndex,pageSize} = req.query;
+  pageIndex = parseInt(pageIndex) || 1;
+  pageSize = parseInt(pageSize) || 10;
+
+
+  let total = await models.booked_session.count(
+   {
+    where: {
+      tutor_id: id
+    }
+   }
+  )
+  let entity = await models.booked_session.findAll({
+    where: {
+      tutor_id: id
+    },
+    include: ["tutor", "student", "course"],
+    offset: (pageIndex - 1) * pageSize,
+    limit: pageSize
+  });
+  return succesCode(res, {
+    pageIndex: pageIndex,
+    pageSize: pageSize,
+    total: total,
+    entity
+  });
+}
+
+
+
+const getCountStudent = async (req,res) => {
+  let { id } = req.params;
+  let total = await models.booked_session.count(
+    {
+     where: {
+       tutor_id: id
+     },
+     distinct: true,
+     col: 'student_id'
+    }
+   )
+   succesCode(res,total)
+}
+
+
+const getValue = async (req,res) => {
+  let { id } = req.params;
+  let total = await models.booked_session.sum('price',
+    {
+     where: {
+       tutor_id: id
+     },
+     distinct: true,
+     col: 'student_id',
+    }
+   )
+   succesCode(res,total)
+}
+
+
+
+const findByTurtorIdAndCount = async (req,res) => {
+  let { id } = req.params;
+  let {pageIndex,pageSize} = req.query;
+  pageIndex = parseInt(pageIndex) || 1;
+  pageSize = parseInt(pageSize) || 10;
+
+
+  let total = await models.booked_session.count(
+   {
+    where: {
+      tutor_id: id
+    },
+    distinct: true,
+    col: 'student_id'
+   }
+  )
+  
+  let entity = await models.booked_session.findAll({
+    where: {
+      tutor_id: id
+    },
+    include: ["tutor", "student", "course"],
+    distinct: true,
+    col: 'student_id',
+    offset: (pageIndex - 1) * pageSize,
+    limit: pageSize
+  });
+  return succesCode(res, {
+    pageIndex: pageIndex,
+    pageSize: pageSize,
+    totalStudent: total,
+    entity
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 const create = async (req, res) => {
   let body = req.body;
+  console.log(req);
   let entity = await models.booked_session.create({
     booked_session_id: uuidv4(),
     ...body,
@@ -68,4 +182,4 @@ const deleteById = async (req, res) => {
   return result > 0 ? succesCode(res, true) : failCode(res, "Thất bại");
 };
 
-module.exports = { findAll, findById, create, update, deleteById,findByStudentId };
+module.exports = { findAll, findById, create, update, deleteById,findByStudentId,findByTurtorId, findByTurtorIdAndCount, getCountStudent, getValue };

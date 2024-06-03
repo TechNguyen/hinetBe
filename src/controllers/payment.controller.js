@@ -55,6 +55,9 @@ const getPaymentUrl = async (req, res) => {
     schedule: req.body.tutor_available_date,
   };
 
+
+  console.log(req);
+
   // tạo booked_session
   var course = await models.course.findByPk(body.course_id);
   var booked_session = await models.booked_session.create({
