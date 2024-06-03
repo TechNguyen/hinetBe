@@ -36,8 +36,6 @@ const findAll = async (req, res) => {
 
 const countStudent = async (req,res) => {
   let {course_id,id} = req.query;
-
-
   let countVL = await models.booked_session.count({
     where: {
       [Op.and]: [{ course_id: course_id }, { tutor_id: id }],
@@ -45,8 +43,6 @@ const countStudent = async (req,res) => {
     distinct: true,
     col: 'student_id'
   })
-  console.log(countVL);
-  succesCode(res,countVL)
 }
 
 const findAllbyTutor = async (req, res) => {
