@@ -8,11 +8,20 @@ const {
   getListCourseHome,
   findAllbyTutor,
 } = require("../controllers/course.controller");
+const uploadCloud = require("../middlewares/uploader");
+
+
 const courseRoutes = express.Router();
 
 courseRoutes.get("/", findAll);
 courseRoutes.get("/:id", findById);
-courseRoutes.post("/", create);
+courseRoutes.post("/", uploadCloud.fields([{
+  name: '',
+  maxCount: 1
+}, {
+  name: '',
+  maxCount: 1
+}]) , create);
 courseRoutes.put("/:id", update);
 courseRoutes.delete("/:id", deleteById);
 courseRoutes.get("/getlistcourselimit", getListCourseHome);

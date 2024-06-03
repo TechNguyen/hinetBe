@@ -80,6 +80,7 @@ const getUserInfoParams = async (id) => {
 
 const updateUserInfo = async (req, res) => {
   let { id } = req.params;
+  console.log(req);
   let entity = await models.users.findOne({
     where: {
       user_id: id,

@@ -3,7 +3,7 @@ const sequelize = require("../models/index");
 const initModel = require("../models/init-models");
 const { succesCode, errorCode, failCode } = require("../responses/response");
 const models = initModel(sequelize);
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const moment = require("moment");
 
@@ -35,6 +35,19 @@ const findAll = async (req, res) => {
 
 const findAllbyTutor = async (req, res) => {
   let {id} = req.params;
+  let {pageIndex,pageSize} =  req.query;
+  pageIndex = parseInt(pageIndex) || 1;
+  pageSize = parseInt(pageSize) || 8;
+
+
+  let total = await models.course.count(
+   {
+    where: {
+      tutor_profile_id: id
+    }
+   }
+  )
+
   let entities = await models.course.findAll({
     where :{
       tutor_profile_id: id
@@ -59,8 +72,15 @@ const findAllbyTutor = async (req, res) => {
         include: ["course_program_phases"],
       },
     ],
+    offset: (pageIndex - 1) * pageSize,
+    limit: pageSize
   });
-  return succesCode(res, entities, "Lấy danh sách khóa học thành công!!!");
+  return succesCode(res, {
+    pageIndex: pageIndex,
+    pageSize: pageSize,
+    total: total,
+    entities
+  }, "Lấy danh sách khóa học thành công!!!");
 };
 
 
